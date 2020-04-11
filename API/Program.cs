@@ -1,10 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -28,7 +23,8 @@ namespace API
                { //buda biz dependency injection vasitesile DataContex
                //servisini cagirib onu istifade edirik
                     var context = services.GetRequiredService<DataContext>();
-                    context.Database.Migrate();    
+                    context.Database.Migrate(); 
+                    Seed.SeedData(context);   
               
                }
                catch (System.Exception ex)
