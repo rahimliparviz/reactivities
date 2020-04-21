@@ -1,12 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {BrowserRouter} from 'react-router-dom';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
 import App from './app/layout/App';
+import ScrollToTop from './app/layout/ScrollToTop';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+   <BrowserRouter>
+     <ScrollToTop>
+     <App />
+     </ScrollToTop>
+   </BrowserRouter>
+   
    </React.StrictMode>
   ,
   document.getElementById('root')

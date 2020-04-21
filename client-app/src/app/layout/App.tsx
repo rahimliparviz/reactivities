@@ -1,99 +1,37 @@
-import React,{useState,useEffect, Fragment, SyntheticEvent} from 'react';
-import axios from "axios";
-import {List, Button, Menu, Container} from "semantic-ui-react";
-import { IActivity } from '../models/activity';
+import React,{ Fragment} from 'react';
+import {Container} from "semantic-ui-react";
 import NavBar from '../../feautures/nav/Navbar';
 import ActivityDashboard from '../../feautures/activities/dashboard/ActivityDashboard';
-import agent from '../api/agent';
-import LoadingCompanent from './LoadingComponent';
+import {observer} from "mobx-react-lite";
+import { Route, withRouter, RouteComponentProps } from 'react-router-dom';
+import HomePage from '../../feautures/home/HomePage';
+import ActivityForm from '../../feautures/activities/form/ActivityForm';
+import ActivityDetails from '../../feautures/activities/details/ActivityDetails';
 
-const App =() => {
+const App:React.FC<RouteComponentProps> =({location}) => {
 
-
-  const [activities, setActivities] = useState<IActivity[]>([])
-  const [selectedActivity, setSelectedActivity] = useState<IActivity | null>(null)
-  const [editMode, setEditMode] = useState(false)
-  const [loader, setLoader] = useState(true)
-  const [submitting, setSubmitting] = useState(false)
-  const [target, setTarget] = useState('')
-
-  useEffect(() => {
-
-    agent.Activities.list()
-    .then(res =>{
-    let activities:IActivity[] = [];
-    res.forEach(activity=>{
-      activity.date = activity.date.split('.')[0];
-      activities.push(activity);
-    })
-      setActivities(activities)
-    }).then(()=>setLoader(false))
-
-  }, [])
-
-  if(loader) return <LoadingCompanent content='Loading activities...' />
-
-  const handleSelectedActivity = (id:string)=>{
-    setSelectedActivity(activities.filter(a=>a.id === id)[0])
-    setEditMode(false);
-  }
-
-  const handleDeleteActivity = (event:SyntheticEvent<HTMLButtonElement>,id:string)=>{
-    setSubmitting(true)
-    setTarget(event.currentTarget.name)
-    agent.Activities.delete(id).then(()=>{
-      setActivities([...activities.filter(a=>a.id !== id)])
-    }).then(()=>setSubmitting(false))
-    
-  }
-
-  const handleOpenCreateForm = ()=>{
-    setEditMode(true);
-    setSelectedActivity(null);
-  }
-
-
-  const handleCreateActivity = (activity:IActivity)=>{
-    setSubmitting(true)
-    agent.Activities.create(activity).then(()=>{
-      setActivities([...activities,activity]);
-      setSelectedActivity(activity);
-      setEditMode(false);
-    }).then(()=>setSubmitting(false))
-  
-  }
-
-  const handleEditActivity = (activity:IActivity)=>{
-    setSubmitting(true)
-
-    agent.Activities.update(activity).then(()=>{
-      setActivities([...activities.filter(a=>a.id != activity.id),activity])
-      setSelectedActivity(activity);
-      setEditMode(false);
-    }).then(()=>setSubmitting(false))
-  }
 
 
   return (
     <Fragment>
-      <NavBar openCreateForm={handleOpenCreateForm}/>
-      <Container style={{marginTop: "7em"}}>
-        <ActivityDashboard 
-          createActivity={handleCreateActivity}
-          editActivity={handleEditActivity}
-          activities={activities}
-          selectedActivity={selectedActivity}
-          selectActivity={handleSelectedActivity}
-          editMode={editMode}
-          setEditMode={setEditMode}
-          setSelectedActivity={setSelectedActivity}
-          deleteActivity={handleDeleteActivity}
-          submitting={submitting}
-          target={target}
-         />
+      <Route exact path='/' component={HomePage}/>
+
+      <Route path={'/(.+)'} render={()=>(
+     <Fragment>
+          <NavBar />
+        <Container style={{marginTop: "7em"}}>
+        <Route exact path='/activities' component={ActivityDashboard}/>
+        <Route path='/activities/:id' component={ActivityDetails}/>
+        <Route key={location.key} path={['/createActivity','/manage/:id']} component={ActivityForm}/>
+        {/* <ActivityDashboard/> */}
       </Container>
+     </Fragment>
+      )} />
+
+      
+     
     </Fragment>
   );
 }
 
-export default App;
+export default withRouter(observer(App));

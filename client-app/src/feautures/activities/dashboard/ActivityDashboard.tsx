@@ -1,71 +1,39 @@
-import React, { useState, useEffect, SyntheticEvent } from 'react'
-import { Grid, List } from 'semantic-ui-react';
-import { IActivity } from '../../../app/models/activity';
+import React, { useContext, useEffect } from 'react'
+import { Grid } from 'semantic-ui-react';
 import ActivityList from './ActivityList';
-import ActivityDetails from '../details/ActivityDetails';
-import ActivityForm from '../form/ActivityForm';
+import { observer } from 'mobx-react-lite';
+import LoadingCompanent from '../../../app/layout/LoadingComponent';
+import ActivityStore from '../../../app/stores/activityStore';
 
 
-export interface ActivityDashboardProps {
-    activities:IActivity[];
-    selectActivity: (id:string) => void;
-    setEditMode: (editMode:boolean) => void;
-    editMode: boolean;
-    selectedActivity:IActivity | null;
-    setSelectedActivity:(activity:IActivity | null)=>void;
-    createActivity:(activity:IActivity)=>void;
-    editActivity:(activity:IActivity)=>void;
-    deleteActivity:(e:SyntheticEvent<HTMLButtonElement>,id:string)=>void;
-    submitting: boolean;
-    target:string
-}
+
  
-const ActivityDashboard: React.SFC<ActivityDashboardProps> = 
-({  activities,
-    selectActivity,
-    selectedActivity,
-    editMode,
-    setEditMode,
-    setSelectedActivity,
-    createActivity,
-    editActivity,
-    deleteActivity,
-    submitting,
-    target
-}) => {
+const ActivityDashboard: React.SFC =() => {
 
+    const activityStore = useContext(ActivityStore)
 
-
+    useEffect(() => {
+      activityStore.loadActivities();
+    }, [activityStore])
+  
+  
+  
+  
+    if(activityStore.loadingInitial) 
+        return <LoadingCompanent content='Loading activities...' />
   
 
     return (
         <Grid>
            <Grid.Column width={10}>
-               <ActivityList
-                submitting={submitting} 
-                deleteActivity={deleteActivity} 
-                activities = {activities} 
-                selectActivity={selectActivity}
-                target={target}
-                />
+               <ActivityList/>
            </Grid.Column>
 
            <Grid.Column width={6}>
-              {selectedActivity && !editMode && 
-              <ActivityDetails setSelectedActivity={setSelectedActivity}  selectedActivity={selectedActivity} setEditMode = {setEditMode}/>}
-               {editMode &&
-                    <ActivityForm 
-                    key = {selectedActivity?.id || 0}
-                    editActivity={editActivity}
-                    createActivity={createActivity}
-                    setEditMode={setEditMode}
-                     activity={selectedActivity}
-                     submitting={submitting}
-                     />
-               }
-           </Grid.Column>
+             <h2>Activity filters</h2>
+            </Grid.Column>
        </Grid>
       );
 }
  
-export default ActivityDashboard;
+export default observer(ActivityDashboard);
