@@ -7,6 +7,7 @@ import { Route, withRouter, RouteComponentProps } from 'react-router-dom';
 import HomePage from '../../feautures/home/HomePage';
 import ActivityForm from '../../feautures/activities/form/ActivityForm';
 import ActivityDetails from '../../feautures/activities/details/ActivityDetails';
+import { ToastContainer } from 'react-toastify';
 
 const App:React.FC<RouteComponentProps> =({location}) => {
 
@@ -14,8 +15,8 @@ const App:React.FC<RouteComponentProps> =({location}) => {
 
   return (
     <Fragment>
+      <ToastContainer position='bottom-right'/>
       <Route exact path='/' component={HomePage}/>
-
       <Route path={'/(.+)'} render={()=>(
      <Fragment>
           <NavBar />

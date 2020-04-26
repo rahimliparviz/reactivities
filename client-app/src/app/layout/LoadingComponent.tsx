@@ -1,12 +1,12 @@
 import React from 'react'
 import { Loader, Dimmer } from 'semantic-ui-react'
 
-export interface LoadingCompanentProps {
+export interface LoadingComponentProps {
     inverted?:boolean,
     content?:string
 }
  
-const LoadingCompanent: React.SFC<LoadingCompanentProps> = ({inverted = true,content}) => {
+const LoadingComponent: React.SFC<LoadingComponentProps> = ({inverted = true,content}) => {
     return ( 
         <Dimmer active inverted={inverted}>
             <Loader content={content} />
@@ -14,4 +14,4 @@ const LoadingCompanent: React.SFC<LoadingCompanentProps> = ({inverted = true,con
      );
 }
  
-export default LoadingCompanent;
+export default LoadingComponent;

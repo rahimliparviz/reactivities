@@ -1,9 +1,9 @@
 import React, { useContext, useEffect } from 'react';
-import { Card, Image, Button, Grid } from "semantic-ui-react";
+import { Grid } from "semantic-ui-react";
 import ActivityStore from '../../../app/stores/activityStore'
 import { observer } from 'mobx-react-lite';
-import { RouteComponentProps, Link } from 'react-router-dom';
-import LoadingCompanent from '../../../app/layout/LoadingComponent';
+import { RouteComponentProps } from 'react-router-dom';
+import LoadingComponent from '../../../app/layout/LoadingComponent';
 import ActivityDetailedHeader from './ActivityDetailedHeader';
 import ActivityDetailedInfo from './ActivityDetailedInfo';
 import ActivityDetailedChat from './ActivityDetailedChat';
@@ -14,8 +14,7 @@ interface DetailParams{
   id:string;
 } 
 
-const ActivityDetails: React.SFC<RouteComponentProps<DetailParams>> = ({
-  match,history}) => {
+const ActivityDetails: React.SFC<RouteComponentProps<DetailParams>> = ({match}) => {
   
   
   const activityStore =useContext(ActivityStore);
@@ -26,8 +25,9 @@ const ActivityDetails: React.SFC<RouteComponentProps<DetailParams>> = ({
   }, [loadActivity,match.params.id])
   
 
-  if(loadingInitial || !activity) return <LoadingCompanent content='Loading activity...'/>
+  if (loadingInitial) return <LoadingComponent content='Loading activity...' />;
 
+  if (!activity) return <h2>Activity not found</h2>;
   return (
     <Grid>
     <Grid.Column width={10}>
