@@ -7,7 +7,7 @@ namespace Application.Errors
     {
         private readonly HttpStatusCode _code;
         private readonly object _errors;
-        public RestException(HttpStatusCode code, object errors)
+        public RestException(HttpStatusCode code, object errors=null)
         {
             this._errors = errors;
             this._code = code;

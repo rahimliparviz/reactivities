@@ -3,14 +3,15 @@ import { Grid } from 'semantic-ui-react';
 import ActivityList from './ActivityList';
 import { observer } from 'mobx-react-lite';
 import LoadingCompanent from '../../../app/layout/LoadingComponent';
-import ActivityStore from '../../../app/stores/activityStore';
+import { RootStoreContext } from '../../../app/stores/rootStore';
 
 
 
  
 const ActivityDashboard: React.SFC =() => {
 
-    const activityStore = useContext(ActivityStore)
+    const rootyStore = useContext(RootStoreContext)
+    const activityStore = rootyStore.activityStore
 
     useEffect(() => {
       activityStore.loadActivities();
