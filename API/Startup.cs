@@ -23,6 +23,7 @@ using Infrastructure.Photos;
 using Application.Profiles;
 using API.SignalR;
 using System.Threading.Tasks;
+using System;
 
 namespace API
 {
@@ -47,7 +48,15 @@ namespace API
             {
                 opt.AddPolicy("CorsPolicy", policy => 
                 {
-                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000").AllowCredentials();
+                    policy
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .WithOrigins("http://localhost:3000")
+                    .AllowCredentials()
+                    .WithExposedHeaders("WWW-Authenticate");
+                    //sonuncy ""WWW-Authenticate" elave etmekde meqsed
+                    //token exipire olanda client headerde bu barede melumat
+                    //gondermesi ucundu
                 });
             });
             services.AddMediatR(typeof(List.Handler).Assembly);
@@ -86,7 +95,12 @@ namespace API
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = key,
                         ValidateAudience = false,
-                        ValidateIssuer = false
+                        ValidateIssuer = false,
+                        //asagidaki iki setr token expire olandan sonre
+                        //logini engellemek ucundu ve 401 unauthorise mesaji gonderir, bulari elave etmesek token
+                        //expire olsa bele sayta daxil olmaq olurdu
+                        ValidateLifetime = true,
+                        ClockSkew = TimeSpan.Zero
                     };
 
                     opt.Events = new JwtBearerEvents
